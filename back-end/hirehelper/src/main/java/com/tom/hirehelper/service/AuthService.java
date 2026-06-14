@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.tom.hirehelper.security.JwtService;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,8 +26,11 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    // Thread-safe in-memory OTP storage
-    private final Map<String, String> otpStorage = new ConcurrentHashMap<>();
+    // Thread-safe in-memory OTP storage: email -> [otp, expiryEpochSecond]
+    private static final long OTP_EXPIRY_SECONDS = 300; // 5 minutes
+    private final Map<String, long[]> otpStorage = new ConcurrentHashMap<>();
+    // Stores otp string separately for lookup
+    private final Map<String, String> otpCodeMap = new ConcurrentHashMap<>();
 
     public AuthService(
             UserRepository userRepository,
@@ -39,10 +43,14 @@ public class AuthService {
 
     private void generateAndSendOtp(String email) {
         String otp = String.format("%06d", new Random().nextInt(1000000));
-        otpStorage.put(email, otp);
+        long expiresAt = Instant.now().getEpochSecond() + OTP_EXPIRY_SECONDS;
+
+        otpCodeMap.put(email, otp);
+        otpStorage.put(email, new long[]{expiresAt});
 
         System.out.println("\n========================================");
         System.out.println("OTP CODE FOR " + email + ": " + otp);
+        System.out.println("Expires in 5 minutes.");
         System.out.println("========================================\n");
     }
 
@@ -100,11 +108,26 @@ public class AuthService {
         String email = request.getEmail();
         String enteredOtp = request.getOtp();
 
-        if (!otpStorage.containsKey(email) || !otpStorage.get(email).equals(enteredOtp)) {
+        // Check OTP exists
+        if (!otpCodeMap.containsKey(email) || !otpStorage.containsKey(email)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired OTP");
         }
 
-        // OTP is correct, remove it and generate token
+        // Check expiry
+        long expiresAt = otpStorage.get(email)[0];
+        if (Instant.now().getEpochSecond() > expiresAt) {
+            otpCodeMap.remove(email);
+            otpStorage.remove(email);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "OTP has expired. Please login again to get a new OTP");
+        }
+
+        // Check OTP code matches
+        if (!otpCodeMap.get(email).equals(enteredOtp)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect OTP code");
+        }
+
+        // OTP is correct and not expired — clean up and issue token
+        otpCodeMap.remove(email);
         otpStorage.remove(email);
 
         String token = jwtService.generateToken(email);

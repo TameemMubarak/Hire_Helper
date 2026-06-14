@@ -1,0 +1,14 @@
+first want to create a login in html  ****
+    then css for it   ****
+        then react for it
+
+
+        
+
+now create a JWT for it along with MYSQL
+    check and verify it
+
+further make dashboard for user profiles .....
+
+
+

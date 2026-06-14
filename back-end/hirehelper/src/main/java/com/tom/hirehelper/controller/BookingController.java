@@ -1,12 +1,9 @@
 package com.tom.hirehelper.controller;
 
 import com.tom.hirehelper.dto.BookingRequest;
-import com.tom.hirehelper.entity.Booking;
 import com.tom.hirehelper.service.BookingService;
 
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/booking")
@@ -22,18 +19,16 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking createBooking(
-            @RequestBody BookingRequest request) {
+    public String bookService(
+            @RequestBody
+            BookingRequest request) {
 
         return bookingService
                 .createBooking(request);
     }
 
-    @GetMapping("/{email}")
-    public List<Booking> getBookings(
-            @PathVariable String email) {
-
-        return bookingService
-                .getUserBookings(email);
+    @GetMapping("/my")
+    public java.util.List<com.tom.hirehelper.entity.Booking> getMyBookings() {
+        return bookingService.getMyBookings();
     }
 }

@@ -52,9 +52,7 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/auth/register",
                                         "/auth/login",
-                                        "/booking",
-                                        "/booking/**",
-                                        "/provider/**"
+                                        "/auth/verify-otp"
                                      )
                                 .permitAll()
                         .anyRequest()

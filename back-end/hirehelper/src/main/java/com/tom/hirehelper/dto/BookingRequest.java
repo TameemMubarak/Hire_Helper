@@ -7,8 +7,9 @@ import lombok.Setter;
 @Setter
 public class BookingRequest {
 
-    private String userEmail;
-
     private Long providerId;
-}
 
+    private String bookingDate;
+
+    private String bookingTime;
+}

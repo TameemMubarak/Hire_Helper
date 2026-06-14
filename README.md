@@ -229,7 +229,7 @@ Request
 
 ---
 
-### Login
+### Login (Initiates OTP)
 
 ```
 POST /auth/login
@@ -248,8 +248,118 @@ Response
 
 ```json
 {
+  "status": "OTP_SENT",
+  "email": "tom@gmail.com"
+}
+```
+
+---
+
+### Verify OTP
+
+```
+POST /auth/verify-otp
+```
+
+Request
+
+```json
+{
+  "email": "tom@gmail.com",
+  "otp": "123456"
+}
+```
+
+Response
+
+```json
+{
+  "status": "VERIFIED",
+  "email": "tom@gmail.com",
   "token": "JWT_TOKEN"
 }
+```
+
+---
+
+### Get Profile
+
+```
+GET /auth/profile
+```
+
+---
+
+### Update Profile
+
+```
+PUT /auth/profile
+```
+
+---
+
+## Tasks
+
+### Create Task
+
+```
+POST /tasks
+```
+
+### Get Tasks Feed (Posted by Others)
+
+```
+GET /tasks
+```
+
+### Get My Posted Tasks
+
+```
+GET /tasks/my
+```
+
+---
+
+## Requests
+
+### Request Help on Task
+
+```
+POST /requests
+```
+
+### Get Received Requests (For my tasks)
+
+```
+GET /requests/received
+```
+
+### Get Sent Requests (By me)
+
+```
+GET /requests/sent
+```
+
+### Update Request Status (Accept/Reject)
+
+```
+PUT /requests/{id}/status?status=ACCEPTED
+```
+
+---
+
+## Notifications
+
+### Get Notifications
+
+```
+GET /notifications
+```
+
+### Mark Notification as Read
+
+```
+PUT /notifications/{id}/read
 ```
 
 ---
@@ -278,14 +388,10 @@ Authorization: Bearer JWT_TOKEN
 POST /booking
 ```
 
-Request
+### Get My Bookings
 
-```json
-{
-  "providerId": 1,
-  "bookingDate": "2026-06-20",
-  "bookingTime": "10:00 AM"
-}
+```
+GET /booking/my
 ```
 
 ---
@@ -293,13 +399,13 @@ Request
 # Security Flow
 
 ```
-User Login
+User Login/Register
     |
     v
-Spring Security
+OTP Generated & Printed to Console
     |
     v
-Password Validation
+User Submits OTP
     |
     v
 JWT Generated
@@ -408,24 +514,25 @@ http://localhost:5173
 
 - JWT Authentication
 - BCrypt Password Encryption
-- Spring Security
-- User Registration
-- User Login
-- Dashboard UI
-- Provider Listing
-- Provider Profile Routing
-- Booking API
-- MySQL Integration
-- React Integration
+- Spring Security Config Hardening
+- User Registration (including First/Last Name, Phone, Avatar)
+- Console-Logged OTP Verification Flow
+- Dashboard with Collapsible Sidebar Navigation
+- Task Posting & Browse Feed Discovery
+- Help Request Submission on Tasks
+- Request Accept / Reject Allocations
+- System-Wide Read/Unread Notifications
+- User Profiles & Settings Updates
+- Booking API Dynamic User Resolution
+- Sticky Glassmorphic Global Navbar
+- MySQL Database Relational Integrity
+- React Frontend Integration
 
 ---
 
 ## In Progress
 
-- Booking History
-- Dynamic Provider Profiles
-- User Profiles
-- Provider Management
+- Production-grade external email provider SMTP integration
 
 ---
 

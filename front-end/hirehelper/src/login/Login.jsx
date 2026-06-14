@@ -20,17 +20,18 @@ function Login() {
         }
       );
 
-      localStorage.setItem(
-        "token",
-        response.data
-      );
-      navigate("/Dashboard");
-      alert("Login Successful");
-      console.log(response.data);
+      if (response.data.status === "OTP_SENT") {
+        alert("Credentials verified. OTP code has been logged to console.");
+        navigate("/verify-otp", { state: { email } });
+      } else {
+        localStorage.setItem("token", response.data.token);
+        navigate("/dashboard");
+        alert("Login Successful");
+      }
 
     } catch (error) {
       console.error(error);
-      alert("Login Failed");
+      alert(error.response?.data?.message || "Login Failed");
     }
   }
 
@@ -42,6 +43,9 @@ function Login() {
             src="/hirehelper_loginLogo.png"
             alt="HireHelper Logo"
             className="logo"
+            onError={(e) => {
+              e.target.src = "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=200";
+            }}
           />
 
           <h1>HireHelper</h1>
@@ -93,7 +97,7 @@ function Login() {
 
             <p className="register">
               Don't have an account?
-              <a href="#"> Register</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate("/register"); }}> Register</a>
             </p>
           </div>
         </div>

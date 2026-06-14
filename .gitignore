@@ -5,3 +5,7 @@ back-end/hirehelper/target/
 .vscode/
 *.log
 EOF
+node_modules/
+target/
+.idea/
+.vscode/

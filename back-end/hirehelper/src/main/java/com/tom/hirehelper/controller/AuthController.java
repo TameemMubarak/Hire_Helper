@@ -1,7 +1,10 @@
 package com.tom.hirehelper.controller;
 
+import com.tom.hirehelper.dto.AuthResponse;
 import com.tom.hirehelper.dto.LoginRequest;
 import com.tom.hirehelper.dto.RegisterRequest;
+import com.tom.hirehelper.dto.VerifyOtpRequest;
+import com.tom.hirehelper.entity.User;
 import com.tom.hirehelper.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,20 +19,30 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(
+    public AuthResponse register(
             @RequestBody RegisterRequest request) {
-
         return authService.register(request);
     }
 
     @PostMapping("/login")
-    public String login(
+    public AuthResponse login(
             @RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
     }
 
+    @PostMapping("/verify-otp")
+    public AuthResponse verifyOtp(
+            @RequestBody VerifyOtpRequest verifyOtpRequest) {
+        return authService.verifyOtp(verifyOtpRequest);
+    }
+
     @GetMapping("/profile")
-    public String profile() {
-        return "Protected Profile Data";
+    public User getProfile() {
+        return authService.getProfile();
+    }
+
+    @PutMapping("/profile")
+    public User updateProfile(@RequestBody User updateDetails) {
+        return authService.updateProfile(updateDetails);
     }
 }

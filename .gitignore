@@ -1,0 +1,7 @@
+cat << EOF >> .gitignore
+front-end/hirehelper/node_modules/
+back-end/hirehelper/target/
+.idea/
+.vscode/
+*.log
+EOF

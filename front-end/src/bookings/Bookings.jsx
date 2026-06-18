@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-
+// bookings component
 function Bookings() {
   const [bookings, setBookings] = useState([]);
   const navigate = useNavigate();

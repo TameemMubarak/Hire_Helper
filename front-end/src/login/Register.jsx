@@ -15,7 +15,7 @@ function Register() {
   const navigate = useNavigate();
 
   async function registerBtn() {
-    if (!username || !email || !password || !firstName || !lastName || !phoneNumber) {
+    if (!username   || !email || !password || !firstName || !lastName || !phoneNumber) {
       alert("Please fill in all fields");
       return;
     }
